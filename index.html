@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YomaChichi Tools</title>
+<meta name="description" content="Free, MIT-licensed tools from a small studio that runs its own online store, plus done-for-you work by email quote and Shopify invoice.">
+<meta name="color-scheme" content="light dark">
+<style>
+:root{
+  --bg:#fbf8f3; --surface:#ffffff; --ink:#1f1d1a; --muted:#5f5a52; --line:#e7e0d5;
+  --accent:#c2552f; --accent-ink:#ffffff; --soft:#f6eadf; --free:#2f7a52; --free-bg:#e5f3ea;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#161513; --surface:#201f1c; --ink:#f1ece4; --muted:#b2aa9e; --line:#35322d;
+    --accent:#ee8a5e; --accent-ink:#1a1310; --soft:#2b2520; --free:#7fd0a1; --free-bg:#1d2d24;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--accent)}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:56px 0 28px}
+.brand{font-weight:700;letter-spacing:.02em;color:var(--muted);font-size:15px;text-transform:uppercase}
+h1{font-size:clamp(30px,6vw,48px);line-height:1.15;margin:12px 0 14px;letter-spacing:-.01em}
+.lede{font-size:clamp(17px,2.4vw,20px);color:var(--muted);max-width:680px;margin:0 0 24px}
+.cta{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;
+  padding:13px 20px;border-radius:12px;font-weight:650}
+.cta:focus-visible,.btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.ghost{margin-left:10px;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--line);padding-bottom:2px}
+h2{font-size:26px;margin:48px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column}
+.card h3{margin:0 0 6px;font-size:21px}
+.card p{margin:0 0 14px;color:var(--muted)}
+.tag{display:inline-block;font-size:13px;font-weight:650;border-radius:999px;padding:3px 10px;margin-bottom:12px}
+.tag.free{background:var(--free-bg);color:var(--free)}
+.tag.svc{background:var(--soft);color:var(--accent)}
+.tier{border-top:1px dashed var(--line);padding-top:12px;margin-top:4px}
+.tier strong{display:block}
+.price{font-weight:750;color:var(--ink)}
+.tier p{margin:2px 0 10px;font-size:15.5px}
+.card .btn{margin-top:auto;align-self:flex-start;text-decoration:none;font-weight:650;color:var(--accent);
+  border:2px solid var(--accent);border-radius:10px;padding:8px 14px}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+code{font-size:.92em;background:var(--soft);padding:1px 6px;border-radius:6px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.steps li{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 56px;position:relative}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:16px;top:14px;width:28px;height:28px;
+  border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;display:grid;place-items:center;font-size:15px}
+.note{background:var(--soft);border-radius:14px;padding:14px 16px;margin-top:14px;font-size:15.5px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:650}
+details p{margin:8px 0 2px;color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:22px 0 40px;color:var(--muted);font-size:14.5px}
+@media (max-width:520px){.ghost{display:inline-block;margin:14px 0 0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">YomaChichi</div>
+  <h1>Small tools that keep a real store running.</h1>
+  <p class="lede">We are a small studio that builds and runs its own online store. These are the tools we wrote for it,
+  built and operated with AI agents. The code is free and MIT-licensed. If you would rather have it done for you,
+  send us an email.</p>
+  <a class="cta" href="mailto:team@yomachichi.com?subject=Quote%20request">Email for a quote</a>
+  <a class="ghost" href="#products">See the tools</a>
+</header>
+
+<main>
+<h2 id="products">The tools</h2>
+<div class="grid">
+
+  <article class="card">
+    <span class="tag free">Free, MIT</span>
+    <h3>expiring-token-guard</h3>
+    <p>TypeScript helpers for Shopify public apps that must move to expiring offline access tokens before
+    January 1, 2027: single-flight refresh, rollback-safe migration of existing installs, retry once on 401,
+    uninstall-safe webhooks. Checked end to end on a development store.</p>
+    <div class="tier">
+      <span class="tag svc">Done for you</span>
+      <strong>Token migration for an Express app &middot; <span class="price">$750 fixed per app</span></strong>
+      <p>A pull request plus a migration script for your existing installs, tests and a runbook. You pay only
+      after it passes on your own development store; no deposit. Pull request within 5 business days of repo
+      access. We never ask for your client secret or tokens. Other Node stacks: email first.</p>
+    </div>
+    <div class="links">
+      <a class="btn" href="https://github.com/yomachichi/expiring-token-guard">Get the code</a>
+      <a class="btn" href="mailto:team@yomachichi.com?subject=token%20migration">Ask for the migration</a>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="tag free">Free, MIT</span>
+    <h3>Operator Guardrails Kit</h3>
+    <p>Hard money and safety guards for AI agents that run real businesses: per-path spend caps, a STOP file,
+    read-back after every write, a stateful fake platform for tests, and a Claude Code hook that blocks money
+    commands that skip the gate. Plain Python, standard library only.</p>
+    <div class="tier">
+      <span class="tag svc">Paid</span>
+      <strong>Operator Pack &middot; <span class="price">$39</span></strong>
+      <p>The 30-entry failure-mode catalogue behind the guards, two Claude skills and three templates.
+      Sent by email once paid. Refund on request within 14 days.</p>
+      <strong>Guardrail Review &middot; <span class="price">$149</span></strong>
+      <p>Send your agent's config (secrets removed); within 48 hours you get a written review, the 5 checks to
+      add first and a patched config. At most 3 reviews a week. Refund on request within 14 days.</p>
+    </div>
+    <div class="links">
+      <a class="btn" href="https://github.com/yomachichi/operator-guardrails">Get the code</a>
+      <a class="btn" href="mailto:team@yomachichi.com?subject=operator%20pack">Order the pack</a>
+      <a class="btn" href="mailto:team@yomachichi.com?subject=guardrail%20review">Book a review</a>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="tag svc">Done for you</span>
+    <h3>Accessible PDF rebuilds</h3>
+    <p>We rebuild your PDF as a new tagged PDF/UA-1 file aimed at WCAG 2.1 AA: headings, reading order, tables
+    with column headers, alt text, title, language and bookmarks, with a veraPDF check report for every file.
+    The words and order stay the same; the layout becomes a clean template, not a copy of your design.</p>
+    <div class="tier">
+      <strong>Price &middot; <span class="price">email for a quote</span></strong>
+      <p>Send the files and we reply with a page count and a fixed price. Not a fit: keeping your exact original
+      design, forms with dropdowns, radio buttons or signatures, tables with row headers, multi-column layouts,
+      languages other than English. Not a guarantee of legal compliance.</p>
+    </div>
+    <div class="links">
+      <a class="btn" href="mailto:team@yomachichi.com?subject=accessible%20PDF">Ask for a quote</a>
+    </div>
+  </article>
+
+</div>
+
+<h2 id="buy">How to buy</h2>
+<ol class="steps">
+  <li>Email <a href="mailto:team@yomachichi.com">team@yomachichi.com</a> with what you need. Using the product
+  name in the subject (for example <code>token migration</code>, <code>operator pack</code>,
+  <code>guardrail review</code>, <code>accessible PDF</code>) gets it to the right place fastest.</li>
+  <li>We reply with a quote: what is included, what is not, and the price.</li>
+  <li>When you are happy, we send a secure Shopify invoice you can pay by card or Shop Pay. For the token
+  migration the invoice comes only after the acceptance test passes on your development store.</li>
+</ol>
+<p class="note"><strong>Never send payment details, passwords, API secrets or tokens by email.</strong>
+Payment only ever happens on the Shopify invoice page, and we will never ask for your keys.</p>
+
+<h2 id="faq">Questions</h2>
+<details>
+  <summary>What is free?</summary>
+  <p>Both code repositories, under the MIT licence: use, change and ship them, no account and no telemetry.</p>
+</details>
+<details>
+  <summary>What is paid?</summary>
+  <p>The token migration ($750 fixed per app), the Operator Pack ($39), the Guardrail Review ($149) and
+  accessible PDF rebuilds (quoted per job).</p>
+</details>
+<details>
+  <summary>How long does it take?</summary>
+  <p>Token migration: a pull request within 5 business days of repo access. Guardrail Review: within 48 hours.
+  Operator Pack: emailed once paid. PDF rebuilds: the timing comes with your quote.</p>
+</details>
+<details>
+  <summary>Who does the work?</summary>
+  <p>The tools are built and operated with AI agents, and we say so openly. If you need work made without any
+  AI tools, tell us and we will tell you honestly that we are not the right fit.</p>
+</details>
+<details>
+  <summary>Are you affiliated with Shopify?</summary>
+  <p>No. expiring-token-guard follows Shopify's public documentation and is not endorsed by Shopify.</p>
+</details>
+<details>
+  <summary>Can I get a refund?</summary>
+  <p>The Operator Pack and the Guardrail Review: on request within 14 days. The token migration is paid only
+  after it passes your own acceptance test.</p>
+</details>
+</main>
+
+<footer>
+  YomaChichi &middot; <a href="mailto:team@yomachichi.com">team@yomachichi.com</a> &middot;
+  <a href="https://github.com/yomachichi">github.com/yomachichi</a> &middot;
+  our store: <a href="https://yomachichi.com">yomachichi.com</a><br>
+  No cookies, no trackers, no scripts on this page.
+</footer>
+
+</div>
+</body>
+</html>

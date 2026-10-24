@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expiring Token Checklist</title>
+<meta name="description" content="Step-by-step checklist for migrating a Shopify Express app to expiring offline access tokens before January 1, 2027, with results from a real development store.">
+<link rel="canonical" href="https://yomachichi.github.io/migrate-expiring-tokens.html">
+<meta name="color-scheme" content="light dark">
+<style>
+:root{
+  --bg:#fbf8f3; --surface:#ffffff; --ink:#1f1d1a; --muted:#5f5a52; --line:#e7e0d5;
+  --accent:#c2552f; --accent-ink:#ffffff; --soft:#f6eadf; --free:#2f7a52; --free-bg:#e5f3ea;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#161513; --surface:#201f1c; --ink:#f1ece4; --muted:#b2aa9e; --line:#35322d;
+    --accent:#ee8a5e; --accent-ink:#1a1310; --soft:#2b2520; --free:#7fd0a1; --free-bg:#1d2d24;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--accent)}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:56px 0 28px}
+.brand{font-weight:700;letter-spacing:.02em;color:var(--muted);font-size:15px;text-transform:uppercase}
+h1{font-size:clamp(30px,6vw,48px);line-height:1.15;margin:12px 0 14px;letter-spacing:-.01em}
+.lede{font-size:clamp(17px,2.4vw,20px);color:var(--muted);max-width:680px;margin:0 0 24px}
+.cta{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;
+  padding:13px 20px;border-radius:12px;font-weight:650}
+.cta:focus-visible,.btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.ghost{margin-left:10px;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--line);padding-bottom:2px}
+h2{font-size:26px;margin:48px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column}
+.card h3{margin:0 0 6px;font-size:21px}
+.card p{margin:0 0 14px;color:var(--muted)}
+.tag{align-self:flex-start;display:inline-block;font-size:13px;font-weight:650;border-radius:999px;padding:3px 10px;margin-bottom:12px}
+.tag.free{background:var(--free-bg);color:var(--free)}
+.tag.svc{background:var(--soft);color:var(--accent)}
+.tier{border-top:1px dashed var(--line);padding-top:12px;margin-top:4px}
+.tier strong{display:block}
+.price{font-weight:750;color:var(--ink)}
+.tier p{margin:2px 0 10px;font-size:15.5px}
+.card .btn{margin-top:auto;align-self:flex-start;text-decoration:none;font-weight:650;color:var(--accent);
+  border:2px solid var(--accent);border-radius:10px;padding:8px 14px}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+code{font-size:.92em;background:var(--soft);padding:1px 6px;border-radius:6px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.steps li{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 56px;position:relative}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:16px;top:14px;width:28px;height:28px;
+  border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;display:grid;place-items:center;font-size:15px}
+.note{background:var(--soft);border-radius:14px;padding:14px 16px;margin-top:14px;font-size:15.5px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:650}
+details p{margin:8px 0 2px;color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:22px 0 40px;color:var(--muted);font-size:14.5px}
+@media (max-width:520px){.ghost{display:inline-block;margin:14px 0 0}}
+</style>
+<style>
+article.post{max-width:720px}
+article.post h2{font-size:24px;margin:40px 0 12px}
+article.post p,article.post li{max-width:70ch}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:14.5px;line-height:1.5}
+pre code{background:none;padding:0}
+.check{list-style:none;padding:0}
+.check li{padding:6px 0 6px 32px;position:relative;border-bottom:1px dashed var(--line)}
+.check li::before{content:"";position:absolute;left:4px;top:11px;width:16px;height:16px;border:2px solid var(--accent);border-radius:4px}
+.meta{color:var(--muted);font-size:15px}
+.offer{background:var(--surface);border:2px solid var(--accent);border-radius:18px;padding:20px 22px;margin:36px 0}
+.offer h2{margin-top:0}
+.back{display:inline-block;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand"><a href="index.html" style="color:inherit;text-decoration:none">YomaChichi</a> &middot; Notes</div>
+  <h1>Migrating a Shopify Express app to expiring offline tokens: a checklist</h1>
+  <p class="lede">Public apps must stop using non-expiring offline access tokens on the GraphQL Admin API by
+  January 1, 2027. On Express, the new flag does not touch your existing installs. Here is what we saw when we
+  migrated a real install on a development store, and an order of steps that survives failure.</p>
+  <p class="meta">Updated 2026-10-24. Every observed result below is from one development store with one test app
+  (legacy install flow, scope read_products). Nothing here was run on a production store.</p>
+</header>
+
+<main>
+<article class="post">
+
+<h2 id="deadline">The deadline in one paragraph</h2>
+<p>In Shopify's words: "New public apps already can't use non-expiring tokens, and existing public apps can't
+after January 1, 2027." After that date a GraphQL Admin API call made with an old token gets 403 Forbidden, with an
+error containing <code>Non-expiring access tokens are no longer accepted for the Admin API</code>. Custom and
+merchant-created apps are not affected.
+(<a href="https://shopify.dev/docs/apps/build/authentication-authorization/migrate-to-expiring-offline-access-tokens">Shopify docs</a>)</p>
+
+<h2 id="model">The new token model</h2>
+<p>An expiring offline access token lives about an hour (<code>expires_in</code> 3600). It comes with a refresh
+token that lives 90 days (<code>refresh_token_expires_in</code> 7776000). Every refresh returns a new pair. The
+refresh token you just used stays valid until you use its successor, or for 30 days after its first use, or until
+its own 90-day expiry, whichever comes first. A 401 <code>{"error":"invalid_request"}</code> on refresh is final:
+the merchant has to re-authenticate. Network errors, timeouts, 5xx and 429 are safe to retry with the same refresh
+token. Shopify also says to "refresh one store at a time".
+(<a href="https://shopify.dev/docs/apps/build/authentication-authorization/access-tokens/offline-access-tokens">offline tokens</a>,
+<a href="https://shopify.dev/docs/apps/build/authentication-authorization/implement-token-exchange#refresh-an-expiring-offline-token">refresh</a>)</p>
+
+<h2 id="express-gap">The Express gap: the flag skips existing installs</h2>
+<p><code>@shopify/shopify-app-express</code> 8.0.0 added a future flag:</p>
+<pre><code>shopifyApp({ ..., future: { expiringOfflineAccessTokens: true } })</code></pre>
+<p>With it on, the OAuth callback requests an expiring token, <code>validateAuthenticatedSession</code> refreshes a
+token that is expired or within 5 minutes of expiring, and <code>shopify.ensureValidOfflineSession(shop)</code> does
+the same for work that never passes through a merchant request (webhooks, cron jobs, queues). It throws if the flag
+is off, so a misconfigured app fails loudly.</p>
+<p>The catch is in the same CHANGELOG entry: "Existing installs keep their current non-expiring token until the next
+OAuth", and "ensureValidOfflineSession will not upgrade a non-expiring token either". A shop that installed your app
+a year ago and never opens it again keeps its old token, and on January 1 every background call for that shop starts
+failing. Those are often your quietest, longest-paying customers.</p>
+<ul>
+  <li>8.0.0 requires Node.js 22 or later.</li>
+  <li>Upgrade at least to shopify-app-express 8.0.1 / shopify-api 14.0.1. Before that patch, with debug logging on,
+  the request body of OAuth token calls was written to the debug log, and those requests carry your client secret
+  and tokens.</li>
+</ul>
+<p>(<a href="https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/shopify-app-express/CHANGELOG.md">CHANGELOG</a>)</p>
+
+<h2 id="exchange">The one-time migration exchange</h2>
+<p>Existing installs need a one-time token exchange that turns the stored non-expiring token into an expiring pair,
+without a merchant session: a form-encoded POST to <code>https://{shop}/admin/oauth/access_token</code> with</p>
+<pre><code>grant_type           = urn:ietf:params:oauth:grant-type:token-exchange
+client_id, client_secret
+subject_token        = &lt;the stored non-expiring token&gt;
+subject_token_type   = urn:shopify:params:oauth:token-type:offline-access-token
+requested_token_type = urn:shopify:params:oauth:token-type:offline-access-token
+expiring             = 1</code></pre>
+<p><code>@shopify/shopify-api</code> wraps this as <code>shopify.auth.migrateToExpiringToken</code> since 12.2.0.
+(<a href="https://shopify.dev/docs/apps/build/authentication-authorization/migrate-to-expiring-offline-access-tokens#migrate-existing-tokens-without-a-user-session">docs</a>)</p>
+
+<h2 id="observed">What a real store returned</h2>
+<ol>
+  <li><strong>A brand-new app can still get a non-expiring token.</strong> The code exchange without
+  <code>expiring=1</code> returned only <code>access_token</code> and <code>scope</code>, and that token answered
+  GraphQL with 200. (Our app had no distribution chosen, which may be why.) Send <code>expiring=1</code> on every
+  code exchange.</li>
+  <li><strong>The migration exchange</strong> returned 200 with <code>expires_in</code> 3599, a
+  <code>refresh_token</code> and <code>refresh_token_expires_in</code> 7775999.</li>
+  <li><strong>The old token died immediately, and not with the documented error.</strong> Right after the exchange
+  the old token got 401 "[API] Invalid API key or access token" on GraphQL and REST, not the 403 phrase. If the write
+  of the new pair fails, you now hold a token that no longer works.</li>
+  <li><strong>A lost response is recoverable.</strong> Repeating the exact same exchange returned the same pair, with
+  <code>expires_in</code> counting down. Keep the old token until the new pair is safely stored: it is the key you
+  need to repeat the request.</li>
+  <li><strong>Lifetimes are time left, not constants.</strong> Store <code>expires_at = now + expires_in</code> as
+  given, and treat 0 or less as "already expired", not "missing".</li>
+  <li><strong>Refresh rotation behaved as documented.</strong> The first refresh token, presented after its successor
+  had been used, got 401 "This request requires an active refresh_token". An earlier access token kept working until
+  its own expiry.</li>
+</ol>
+
+<h2 id="order">A migration order that survives failure</h2>
+<ol>
+  <li>Upgrade (Node 22, shopify-app-express 8.0.1+), turn the flag on, deploy. New installs now get expiring tokens.</li>
+  <li>Check your session storage really persists <code>refreshToken</code> and <code>refreshTokenExpires</code>. Read
+  a row back after a test write.</li>
+  <li>Dry run: list every offline session (<code>offline_{shop}</code>) with no refresh token. No network calls, no
+  writes. Compare the count with your install count.</li>
+  <li>Migrate one shop at a time: exchange, then write the new fields onto the same session row, keeping every other
+  field. Never delete first and insert second.</li>
+  <li>Record a result per shop: migrated / already expiring / no session / failed. A 400
+  <code>invalid_subject_token</code> usually means revoked or uninstalled; record it and move on.</li>
+  <li>Refuse to post your client secret to anything that is not <code>&lt;name&gt;.myshopify.com</code>.</li>
+  <li>Run it twice. The second run should make no exchange calls.</li>
+</ol>
+
+<h2 id="background">Background work and webhooks</h2>
+<ul>
+  <li>Load sessions in webhooks, cron jobs and queues through <code>ensureValidOfflineSession</code> (or a
+  refresh-if-due wrapper), never by reading the stored token directly.</li>
+  <li>Refresh single-flight per shop. Two workers refreshing the same shop at once retire each other's refresh token.
+  Across instances you need a shared lock (Redis, a Postgres advisory lock).</li>
+  <li>Retry an Admin API call once after a 401: refresh, then retry. A second 401 means re-authenticate.</li>
+  <li>If a refresh response arrives without <code>expires_in</code>, don't store it as non-expiring
+  (<a href="https://github.com/Shopify/shopify-app-js/issues/3400">shopify-app-js #3400</a>).</li>
+  <li>Uninstall and compliance webhooks often arrive when the token is already gone. Verify the HMAC, then answer 200
+  when the only failure is a missing session, or Shopify keeps retrying
+  (<a href="https://github.com/Shopify/shopify-app-js/issues/3360">#3360</a>).</li>
+</ul>
+
+<h2 id="checklist">The checklist</h2>
+<ul class="check">
+  <li>Node 22 and shopify-app-express 8.0.1+ (or shopify-api 14.0.1+), debug token logging off in production</li>
+  <li>Flag on; one fresh install on a dev store gets an expiring token</li>
+  <li>Session storage round-trips <code>refreshToken</code> / <code>refreshTokenExpires</code></li>
+  <li>Every background caller loads sessions through a refresh-if-due path</li>
+  <li>Per-shop single-flight refresh, with a shared lock if you run more than one instance</li>
+  <li>Migration: dry run, one shop at a time, write-then-retire, per-shop report, second run is a no-op</li>
+  <li>Uninstall and compliance webhooks answer 200 on "no session" after HMAC verification</li>
+  <li>Alerting on the 403 "Non-expiring access tokens are no longer accepted" phrase after January 1</li>
+</ul>
+<p>Do it on a development store first: install through the old flow so it holds a real non-expiring token, migrate
+it, and watch the old token stop working and the new one keep working. That one run caught a bug that our tests
+against a fake never did.</p>
+
+<h2 id="code">Free code</h2>
+<p>The helpers we wrote for this (dry-run migration for Express session storage, single-flight refresh, retry once
+on 401, uninstall-safe webhooks) are a free MIT library:
+<a href="https://github.com/yomachichi/expiring-token-guard">github.com/yomachichi/expiring-token-guard</a>.</p>
+
+<section class="offer" id="done-for-you">
+  <h2>Rather have it done for you?</h2>
+  <p><strong>Token migration for an Express app, $750 fixed per app.</strong> A pull request with the upgrade, the
+  flag, a migration script for your existing installs (dry run and per-shop report), tests and a runbook. Pull
+  request within 5 business days of repo access. We never ask for your client secret or tokens: you run the script.</p>
+  <p>Write to <a href="mailto:team@yomachichi.com?subject=token%20migration">team@yomachichi.com</a>
+  with the subject <code>token migration</code>. You pay a Shopify invoice only after the acceptance test passes
+  on your own development store; no deposit.</p>
+</section>
+
+<p class="meta">Not affiliated with Shopify. Built and operated with AI agents, as the rest of this site says.</p>
+<a class="back" href="index.html">&larr; All tools</a>
+</article>
+</main>
+
+<footer>
+  YomaChichi &middot; <a href="mailto:team@yomachichi.com">team@yomachichi.com</a> &middot;
+  <a href="https://github.com/yomachichi">github.com/yomachichi</a><br>
+  No cookies, no trackers, no scripts on this page.
+</footer>
+</div>
+</body>
+</html>
